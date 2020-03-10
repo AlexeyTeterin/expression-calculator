@@ -4,7 +4,6 @@ function eval() {
 }
 
 function expressionCalculator(expr) {
-
   // Убираем пробелы из строки
   expr = expr.replace(/\s/g, "");
   console.log(expr);
@@ -26,18 +25,25 @@ function expressionCalculator(expr) {
     return expressionCalculator(expr.slice(0, innerLBracket) + expressionCalculator(expr.slice(innerLBracket + 1, innerRBracket)) + expr.slice(innerRBracket + 1));
   }
 
-  let array = expr.split(/[\*+\-\/]/g).map(x => +x), // строки в числа
+  // Пребразуемстроки в числа
+  let array = expr.split(/[\*+\-\/]/g).map(x => +x),
     operators = expr.split(/[\d]*[.]*[\d]*/g);
-  console.log(array);
 
-  // Решаем минус в начале строки
-  
+  // Убираем пустые значения в начале и в конце массивф операторов 
   if (array[0] !== 0 && operators[0] !== '-') {
     operators.splice(0, 1);
   }
   operators.splice(-1, 1);
-  console.log(operators);
 
+  // Обрабатываем отрицательные числа
+  for (let isZero = 0; isZero < array.length; isZero++) {
+    if (array[isZero] == 0 && operators[isZero] == '-') {
+      array.splice(isZero, 2, (array[isZero] - array[isZero + 1]));
+      operators.splice(isZero, 1);
+    }
+  }
+
+  // Производим арифметические действия
   while (array.length > 1) {
     let multiply = operators.indexOf('*'),
       divide = operators.indexOf('/'),
@@ -63,7 +69,9 @@ function expressionCalculator(expr) {
       array.splice(plus, 2, array[plus] + array[plus + 1]);
       operators.splice(plus, 1);
       continue;
-    } else break;
+    } else {
+      break;
+    }
   }
 
   return array[0];
@@ -74,6 +82,6 @@ module.exports = {
 }
 
 let x = " (  97 / 48 + 86 + 56 * 94  ) / 43 + 57 ";
-let y = " (  68 - 85 / 75 * 64  ) / 15 + 73 ";
-let z = '-4.533333333333331/15+73';
+let y = "136*-111.42857142857144/18/84";
+let z = ' (  38 + 52 + 65 - 19  ) * (  72 * 3 / 36 * (  9 / 2 - 17 * 38 / 28  )  ) / 18 / 84 ';
 console.log(expressionCalculator(z));
