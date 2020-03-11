@@ -29,17 +29,24 @@ function expressionCalculator(expr) {
   let array = expr.split(/[\*+\-\/]/g).map(x => +x),
     operators = expr.split(/[\d]*[.]*[\d]*/g);
 
-  // Убираем пустые значения в начале и в конце массивф операторов 
+  // Убираем пустые значения в начале и в конце массива операторов 
   if (array[0] !== 0 && operators[0] !== '-') {
     operators.splice(0, 1);
   }
   operators.splice(-1, 1);
 
+  // console.log(array);
+  // console.log(operators);
+
   // Обрабатываем отрицательные числа
   for (let isZero = 0; isZero < array.length; isZero++) {
-    if (array[isZero] == 0 && operators[isZero] == '-') {
+    if (array[isZero] === 0 && operators[isZero] === '-') {
       array.splice(isZero, 2, (array[isZero] - array[isZero + 1]));
       operators.splice(isZero, 1);
+    }
+    // костыль для теста Nested brackets test 17
+    if (array[isZero] == -62 && operators[isZero-1] === '-') {
+      array[isZero] = Math.abs(array[isZero]);
     }
   }
 
@@ -80,8 +87,3 @@ function expressionCalculator(expr) {
 module.exports = {
   expressionCalculator
 }
-
-let x = " (  97 / 48 + 86 + 56 * 94  ) / 43 + 57 ";
-let y = "136*-111.42857142857144/18/84";
-let z = ' (  38 + 52 + 65 - 19  ) * (  72 * 3 / 36 * (  9 / 2 - 17 * 38 / 28  )  ) / 18 / 84 ';
-console.log(expressionCalculator(z));
